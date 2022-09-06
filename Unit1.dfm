@@ -190,6 +190,7 @@ object Form1: TForm1
       'Password=s3e2r1f1'
       'Server=airtem.mysql.tools'
       'DriverID=MySQL')
+    Connected = True
     LoginPrompt = False
     Left = 488
     Top = 136
@@ -216,9 +217,9 @@ object Form1: TForm1
       'WHERE '
       'f.JUR_CITY_ID=j.CITY_ID '
       'AND f.POST_CITY_ID=p.CITY_ID'
-      'AND f.NAME LIKE :NAME'
-      'AND j.CITY_NAME LIKE :CITY_J'
-      ' AND p.CITY_NAME LIKE :CITY_P')
+      'AND LOWER(f.NAME) LIKE LOWER(:NAME)'
+      'AND LOWER(j.CITY_NAME) LIKE LOWER(:CITY_J)'
+      ' AND LOWER(p.CITY_NAME) LIKE LOWER(:CITY_P)')
     Left = 552
     Top = 456
     ParamData = <
