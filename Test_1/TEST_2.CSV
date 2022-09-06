@@ -1,0 +1,20 @@
+Ќазвание фирмы,ёр.јдрес,ѕочт.адр.,,‘ильтр  ,
+п€терочка,с»ћ‘ерополь,с»ћ‘ерополь,,назван. ‘ирмы,п€терочка
+п€терочка,с»ћ‘ерополь,ћосква,,ёр.јдрес,симферополь
+,,,,Sql-запрос,
+,,,,,
+,,,,"SELECT
+ 	 f.NAME
+ 	,j.CITY_NAME 'юр.адрес' 
+	,p.CITY_NAME 'почт. адр.' 
+	,f.`FIRM_ID`
+FROM 
+	CITY AS p, 
+    CITY AS j, 
+    FIRM AS f 
+WHERE 
+	f.JUR_CITY_ID=j.CITY_ID 
+AND f.POST_CITY_ID=p.CITY_ID
+AND LOWER(f.NAME) 		LIKE LOWER('п€терочка%')
+AND LOWER(j.CITY_NAME) 	LIKE LOWER('симферополь%')
+AND LOWER(p.CITY_NAME) 	LIKE LOWER('%');",

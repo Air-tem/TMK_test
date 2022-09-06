@@ -20,6 +20,7 @@ object Form1: TForm1
     Width = 1237
     Height = 73
     Align = alTop
+    PopupMenu = PopupMenu1
     TabOrder = 0
     object LabeledEdit1: TLabeledEdit
       Left = 16
@@ -53,6 +54,15 @@ object Form1: TForm1
       EditLabel.Caption = #1055#1086#1095#1090#1086#1074#1099#1081' '#1072#1076#1088#1077#1089
       TabOrder = 2
       OnChange = LabeledEdit1Change
+    end
+    object CheckBox1: TCheckBox
+      Left = 504
+      Top = 29
+      Width = 257
+      Height = 17
+      Caption = #1053#1077' '#1089#1074#1103#1079#1099#1074#1072#1090#1100' '#1090#1072#1073#1083#1080#1094#1099
+      TabOrder = 3
+      OnClick = CheckBox1Click
     end
   end
   object DBGrid1: TDBGrid
@@ -248,6 +258,7 @@ object Form1: TForm1
   object FDQuery2: TFDQuery
     Connection = FDConnection1
     SQL.Strings = (
+      'set @par1=:F;'
       'SELECT '
       #9'YEAR(`DOC_DATE`)as'#39#1043#1086#1076'/'#1052#1077#1089#1103#1094#39' '
       
@@ -288,7 +299,7 @@ object Form1: TForm1
         'd) as '#39#1044#1077#1082#1072#1073#1088#1100#39
       'FROM `DOCUMENT` D'
       'WHERE'
-      #9'D.FIRM_ID=:F'
+      '1 and D.FIRM_ID=@par1'
       ''
       ''
       'GROUP BY YEAR(`DOC_DATE`);')
@@ -297,9 +308,9 @@ object Form1: TForm1
     ParamData = <
       item
         Name = 'F'
-        DataType = ftInteger
+        DataType = ftString
         ParamType = ptInput
-        Value = 0
+        Value = '1'
       end>
   end
   object DataSource2: TDataSource
@@ -307,8 +318,16 @@ object Form1: TForm1
     Left = 688
     Top = 208
   end
-  object OpenDialog1: TOpenDialog
-    Left = 616
-    Top = 320
+  object PopupMenu1: TPopupMenu
+    Left = 704
+    Top = 360
+    object importtableleft1: TMenuItem
+      Caption = 'import table left'
+      OnClick = importtableleft1Click
+    end
+    object importtableleft2: TMenuItem
+      Caption = 'import table right'
+      OnClick = importtableleft2Click
+    end
   end
 end

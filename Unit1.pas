@@ -10,7 +10,7 @@ uses
   FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, Data.DB, FireDAC.Comp.Client,
   FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf, FireDAC.DApt,
   Vcl.DBCtrls, FireDAC.Comp.DataSet, Vcl.Grids, Vcl.DBGrids, Vcl.ExtCtrls,
-  Vcl.StdCtrls, Vcl.Mask,DateUtils;
+  Vcl.StdCtrls, Vcl.Mask,DateUtils,RegularExpressions, Vcl.Menus;
 
 type
   TForm1 = class(TForm)
@@ -26,10 +26,16 @@ type
     FDQuery2: TFDQuery;
     DBGrid2: TDBGrid;
     DataSource2: TDataSource;
-    OpenDialog1: TOpenDialog;
+    PopupMenu1: TPopupMenu;
+    importtableleft1: TMenuItem;
+    importtableleft2: TMenuItem;
+    CheckBox1: TCheckBox;
     procedure LabeledEdit1Change(Sender: TObject);
     procedure DataSource1DataChange(Sender: TObject; Field: TField);
     procedure FormCreate(Sender: TObject);
+    procedure importtableleft1Click(Sender: TObject);
+    procedure CheckBox1Click(Sender: TObject);
+    procedure importtableleft2Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -43,11 +49,30 @@ implementation
 
 {$R *.dfm}
 
+procedure TForm1.CheckBox1Click(Sender: TObject);
+var
+  st:string;
+begin
+      st:=FDQuery2.SQL.Text;
+      if form1.CheckBox1.Checked then
+        Insert('-- ', st,pos('and',st))
+      else
+        delete(st,pos('and',st)-3,3)  ;
+
+      FDQuery2.Close;
+      FDQuery2.SQL.Text:=st;
+      FDQuery2.open;
+
+end;
+
 procedure TForm1.DataSource1DataChange(Sender: TObject; Field: TField);
 begin
-      Form1.FDQuery2.Close;
-     Form1.FDQuery2.Params[0].Value:=Form1.FDQuery1.Fields[3].AsInteger;
-     Form1.FDQuery2.Open();
+    if not form1.CheckBox1.Checked then
+      begin
+        Form1.FDQuery2.Close;
+        Form1.FDQuery2.Params[0].Value:=Form1.FDQuery1.Fields[3].AsInteger;
+        Form1.FDQuery2.Open();
+      end;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
@@ -75,6 +100,57 @@ begin
     form1.FDPhysMySQLDriverLink1.VendorLib:= fileName;
     FDConnection1.Connected:=true;
     FDQuery1.Open;
+
+end;
+
+procedure TForm1.importtableleft1Click(Sender: TObject);
+var
+  s:string;
+  st:TStringList;
+  i:integer;
+  RegEx: TRegEx;
+begin
+   st:=TStringList.Create;
+   RegEx:=TRegEx.Create('\r\n');
+   st.append('Название фирмы;Юр.Адрес;Почт.адр.');
+  with FDQuery1 do begin
+    first;
+    while not eof do begin
+      s:='';
+      for i:=0 to 2 do
+        s:=s+Fields[i].AsString+';';
+      st.append(RegEx.Replace(s,''));
+      next;
+    end;
+
+  end;
+  st.savetofile('file1.csv');
+  st.free;
+end;
+
+procedure TForm1.importtableleft2Click(Sender: TObject);
+var
+  s:string;
+  st:TStringList;
+  i:integer;
+  RegEx: TRegEx;
+begin
+   st:=TStringList.Create;
+   RegEx:=TRegEx.Create('\r\n');
+   st.append('Год;Январь;Февраль;Март;Апрель;Май;Июнь;Июль;Август;Сентябрь;Октябрь;Ноябрь;Декабрь');
+  with FDQuery2 do begin
+    first;
+    while not eof do begin
+      s:='';
+      for i:=0 to 12 do
+        s:=s+Fields[i].AsString+';';
+      st.append(RegEx.Replace(s,''));
+      next;
+    end;
+
+  end;
+  st.savetofile('file2.csv');
+  st.free;
 
 end;
 
