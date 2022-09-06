@@ -200,7 +200,6 @@ object Form1: TForm1
       'Password=s3e2r1f1'
       'Server=airtem.mysql.tools'
       'DriverID=MySQL')
-    Connected = True
     LoginPrompt = False
     Left = 488
     Top = 136
